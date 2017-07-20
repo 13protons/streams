@@ -10,7 +10,7 @@ Implementing the [Nodejs Stream API](https://nodejs.org/api/stream.html) for the
 > Targeting v0.2.0 for full readable implementation
 
 ```
-npm install broswer-streams
+npm install browser-streams
 ```
 
 ## Usage
