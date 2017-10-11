@@ -1,0 +1,49 @@
+<html>
+  <head>
+    <script type="text/javascript" src="../dist/streams.js"></script>
+  </head>
+
+  <body>
+    <h1>Model analytics recording as a Stream</h1>
+    <h2>Open your console to see the action :)</h2>
+    <p>Click around! In this example, click events are captured by a corked stream and that stream is drained to the console every 5 seconds (but coudl be drained to a remote server for analytics capture)</p>
+
+    <script type="text/javascript">
+      // writeable callback function performs actual write operations
+      var writeable = Stream.writeable({highWaterMark: 5}, function (data){
+        console.log('==== This Data goes to the Analytics Server :) =================');
+        console.info(data);
+        console.log('====================');
+      });
+      writeable.cork();
+
+      // Comment out this line to reduce console noise
+      // writeable._loglevel('info');
+
+      document.addEventListener("click", function(e){
+        var payload = {
+          x: e.x,
+          y: e.y,
+          type: e.type,
+          node: e.target.nodeName,
+          target: e.path,
+          ts: Date.now()
+        }
+        writeable.write(payload);
+      });
+
+      //
+      // writeable.on('drain', function(data){
+      //   console.log(Date.now(), 'Saving buffered data.', data);
+      // })
+
+      setInterval(function(){
+        console.info('===== Flush buffer ==================');
+        writeable.uncork();
+        setTimeout(writeable.cork);
+      }, 5 * 1000) // every 5 seconds;
+
+    </script>
+  </body>
+
+</html>
